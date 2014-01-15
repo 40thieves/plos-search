@@ -25,13 +25,15 @@ describe('PLOS Search', function() {
 
 		it('should return article objects containing article metadata', function(done) {
 			search.search('altmetrics', function(err, result) {
-				expect(result).to.have.deep.property('[0].id');
-				expect(result).to.have.deep.property('[0].journal');
-				expect(result).to.have.deep.property('[0].publication_date');
-				expect(result).to.have.deep.property('[0].article_type');
-				expect(result).to.have.deep.property('[0].author_display');
-				expect(result).to.have.deep.property('[0].abstract');
-				expect(result).to.have.deep.property('[0].title_display');
+				result.forEach(function(r) {
+					expect(r).to.have.property('id');
+					expect(r).to.have.property('journal');
+					expect(r).to.have.property('publication_date');
+					expect(r).to.have.property('article_type');
+					expect(r).to.have.property('author_display');
+					expect(r).to.have.property('abstract');
+					expect(r).to.have.property('title_display');
+				});
 
 				done();
 			});
@@ -75,7 +77,36 @@ describe('PLOS Search', function() {
 	});
 
 	describe('#authorSearch()', function() {
+		it('should take an author name as the first argument', function(done) {
+			search.authorSearch('neylon', function(err, result) {
+				expect(result).to.exist;
 
+				done();
+			});
+		});
+
+		it('should return an array of article objects', function(done) {
+			search.authorSearch('neylon', function(err, result) {
+				expect(result).to.be.a('array');
+
+				done();
+			});
+		});
+
+		it('should return article objects with article metadata written by the author', function(done) {
+			search.authorSearch('neylon', function(err, result) {
+				result.forEach(function(r) {
+					expect(r).to.have.property('id');
+					expect(r).to.have.property('publication_date');
+					expect(r).to.have.property('article_type');
+					expect(r).to.have.property('author_display');
+					expect(r).to.have.property('abstract');
+					expect(r).to.have.property('title_display');
+				});
+
+				done();
+			});
+		});
 	});
 
 	describe('#titleSearch()', function() {
