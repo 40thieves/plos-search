@@ -101,6 +101,9 @@ describe('PLOS Search', function() {
 
 			search.fetch();
 		});
+
+		// Can't seem to get a error response from the API - always responds with 200
+		// Will keep error handling for this in there though - it's just a bit difficult to test, until I put in mocking
 	});
 
 	// describe('#authorSearch()', function() {
