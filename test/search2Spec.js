@@ -102,63 +102,76 @@ describe('Search', function() {
 			search.fetch();
 		});
 
+		it('should only accept query params from the whitelist of possible params', function(done) {
+			var search = new Search({
+				foo: 'bar'
+			});
+
+			search.on('error', function(err) {
+				expect(err).to.exist;
+				expect(err).to.have.property('statusCode').that.equals(400);
+				expect(err).to.have.property('statusMessage').that.equals('Query param not recognised');
+
+				done();
+			});
+
+			search.fetch();
+		});
+
 		// Can't seem to get a error response from the API - always responds with 200
 		// Will keep error handling for this in there though - it's just a bit difficult to test, until I put in mocking
 	});
 
-	// describe('Author Search', function() {
-		// it('should allow a filter response option to be set on the module', function(done) {
-		// 	var search = new Search('altmetrics');
+	describe('Advanced Search', function() {
+		it('should take an object as the search parameter', function(done) {
+			var search = new Search({
+				author: 'neylon'
+			});
 
-		// 	search.filterResponse = true;
+			search.on('success', function(data) {
+				expect(data).to.exist;
 
-		// 	search.on('success', function(data) {
-		// 		done();
-		// 	});
+				done();
+			});
 
-		// 	search.fetch();
-		// });
+			search.fetch();
+		});
 
-		// it('should take an author name as the first argument', function(done) {
-			// var search = new Search({
-			// 	author: 'neylon'
-			// });
+		it('should return an array of article objects', function(done) {
+			var search = new Search({
+				author: 'neylon'
+			});
 
-			// var search = new Search('skdh');
+			search.on('success', function(data) {
+				expect(data).to.be.a('array');
 
-			// search.on('success', function(data) {
-			// 	expect(result).to.exist;
+				done();
+			});
 
-			// 	done();
-			// });
+			search.fetch();
+		});
 
-			// search.fetch();
-		// });
+		it('should return article objects with article metadata written by the author', function(done) {
+			var search = new Search({
+				author: 'neylon'
+			});
 
+			search.on('success', function(data) {
+				data.forEach(function(result) {
+					expect(result).to.have.property('id');
+					expect(result).to.have.property('publication_date');
+					expect(result).to.have.property('article_type');
+					expect(result).to.have.property('author_display');
+					expect(result).to.have.property('abstract');
+					expect(result).to.have.property('title_display');
+				});
 
-		// it('should return an array of article objects', function(done) {
-		// 	search.authorSearch('neylon', function(err, result) {
-		// 		expect(result).to.be.a('array');
+				done();
+			});
 
-		// 		done();
-		// 	});
-		// });
-
-		// it('should return article objects with article metadata written by the author', function(done) {
-		// 	search.authorSearch('neylon', function(err, result) {
-		// 		result.forEach(function(r) {
-		// 			expect(r).to.have.property('id');
-		// 			expect(r).to.have.property('publication_date');
-		// 			expect(r).to.have.property('article_type');
-		// 			expect(r).to.have.property('author_display');
-		// 			expect(r).to.have.property('abstract');
-		// 			expect(r).to.have.property('title_display');
-		// 		});
-
-		// 		done();
-		// 	});
-		// });
-	// });
+			search.fetch();
+		});
+	});
 
 	// describe('#titleSearch()', function() {
 
