@@ -118,11 +118,44 @@ describe('Search', function() {
 			search.fetch();
 		});
 
-		// Can't seem to get a error response from the API - always responds with 200
-		// Will keep error handling for this in there though - it's just a bit difficult to test, until I put in mocking
+		it('should return an error if the API request returns an error', function(done) {
+			var search = new Search({
+				test: 'test'
+			}, {
+				mode: 'test'
+			});
+
+			search.on('error', function(err) {
+				expect(err).to.exist;
+
+				done();
+			});
+
+			search.fetch();
+		});
+
+		// it('should return an error if no query argument provided', function(done) {
+		// 	var search = new Search();
+
+		// 	search.on('error', function(err) {
+		// 		var expected = {
+		// 			statusCode: 400,
+		// 			statusMessage: 'No query given'
+		// 		};
+
+		// 		expect(err).to.exist;
+		// 		expect(err).to.deep.equal(expected);
+
+		// 		done();
+		// 	});
+
+		// 	search.fetch();
+		// });
 	});
 
 	describe('Advanced Search', function() {
+		this.timeout(10000);
+
 		it('should take an object as the search parameter', function(done) {
 			var search = new Search({
 				author: 'neylon'
@@ -173,19 +206,21 @@ describe('Search', function() {
 		});
 	});
 
-	// describe('#titleSearch()', function() {
+	describe('Options', function() {
+		this.timeout(10000);
 
-	// });
+		it('should take an options object as the second argument', function(done) {
+			var search = new Search('altmetrics', {
+				mode: 'test'
+			});
 
-	// describe('#subjectSearch()', function() {
+			search.on('success', function(data) {
+				expect(data).to.exist;
 
-	// });
+				done();
+			});
 
-	// describe('#abstractSearch()', function() {
-
-	// });
-
-	// describe('#rawSearch()', function() {
-
-	// });
+			search.fetch();
+		});
+	});
 });
