@@ -223,6 +223,28 @@ describe('Search', function() {
 
 			search.fetch();
 		});
+
+		it('should return article objects with article metadata from searches with multiple query params', function(done) {
+			var search = new Search({
+				abstract: 'open access',
+				journal: 'plos biology'
+			});
+
+			search.on('success', function(data) {
+				data.forEach(function(result) {
+					expect(result).to.have.property('id');
+					expect(result).to.have.property('publication_date');
+					expect(result).to.have.property('article_type');
+					expect(result).to.have.property('author_display');
+					expect(result).to.have.property('abstract');
+					expect(result).to.have.property('title_display');
+				});
+
+				done();
+			});
+
+			search.fetch();
+		});
 	});
 
 	describe('Options', function() {
