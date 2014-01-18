@@ -1,71 +1,98 @@
 var expect = require('chai').expect
-,	config = require('../lib/config')()
-,	search = require('../lib/plosSearch')
+,	Search = require('../lib/plosSearch2')
 ;
 
-describe('PLOS Search', function() {
-	describe('#search()', function() {
+describe('Search', function() {
+	describe('General Search', function() {
 		this.timeout(10000);
 
 		it('should take a query as the first argument', function(done) {
-			search.search('altmetrics', function(err, result) {
-				expect(result).to.exist;
+			var search = new Search('altmetrics');
+
+			search.on('success', function(data) {
+				expect(data).to.exist;
 
 				done();
 			});
+
+			search.fetch();
 		});
 
 		it('should return an array of article objects', function(done) {
-			search.search('altmetrics', function(err, result) {
-				expect(result).to.be.a('array');
+			var search = new Search('altmetrics');
+
+			search.on('success', function(data) {
+				expect(data).to.be.a('array');
 
 				done();
 			});
+
+			search.fetch();
 		});
 
 		it('should return article objects containing article metadata', function(done) {
-			search.search('altmetrics', function(err, result) {
-				result.forEach(function(r) {
-					expect(r).to.have.property('id');
-					expect(r).to.have.property('journal');
-					expect(r).to.have.property('publication_date');
-					expect(r).to.have.property('article_type');
-					expect(r).to.have.property('author_display');
-					expect(r).to.have.property('abstract');
-					expect(r).to.have.property('title_display');
+			var search = new Search('altmetrics');
+
+			search.on('success', function(data) {
+				data.forEach(function(result) {
+					expect(result).to.have.property('id');
+					expect(result).to.have.property('publication_date');
+					expect(result).to.have.property('article_type');
+					expect(result).to.have.property('author_display');
+					expect(result).to.have.property('abstract');
+					expect(result).to.have.property('title_display');
 				});
 
 				done();
 			});
+
+			search.fetch();
 		});
 
 		it('should return article objects containing an array of authors', function(done) {
-			search.search('altmetrics', function(err, result) {
-				expect(result[0].author_display).to.be.a('array');
+			var search = new Search('altmetrics');
+
+			search.on('success', function(data) {
+				data.forEach(function(result) {
+					expect(result.author_display).to.be.a('array');
+				});
 
 				done();
 			});
+
+			search.fetch();
 		});
 	});
 
-	describe('#search() error handling', function() {
+	describe('Error handling', function() {
 		this.timeout(10000);
 
 		it('should return error query not provided', function(done) {
-			search.search('', function(err, result) {
-				expect(err).to.exist;
-				expect(result).to.not.exist;
+			var search = new Search('');
+
+			search.on('success', function(data) {
+				expect(data).to.not.exist;
 
 				done();
 			});
+
+			search.on('error', function(err) {
+				expect(err).to.exist;
+
+				done();
+			});
+
+			search.fetch();
 		});
 
 		it('should return a useful error response if query not provided', function(done) {
-			search.search('', function(err, result) {
+			var search = new Search('');
+
+			search.on('error', function(err) {
 				var expected = {
-					statusCode: 404,
-					statusResponse: 'No results found',
-					body: { response: { numFound: 0, start: 0, maxScore: 0, docs: [] } }
+					statusCode: 400,
+					statusMessage: 'No query provided',
+					body: {}
 				};
 
 				expect(err).to.deep.equal(expected);
@@ -73,55 +100,168 @@ describe('PLOS Search', function() {
 				done();
 			});
 
+			search.fetch();
+		});
+
+		it('should return a 404 error response if query not found', function(done) {
+			var search = new Search('akldfhkdshskfhklsdhskldhfk');
+
+			search.on('failure', function(err) {
+				var expected = {
+					statusCode: 404,
+					statusMessage: 'No results found'
+				};
+
+				expect(err).to.deep.equal(expected);
+
+				done();
+			});
+
+			search.fetch();
+		});
+
+		it('should only accept query params from the whitelist of possible params', function(done) {
+			var search = new Search({
+				foo: 'bar'
+			});
+
+			search.on('error', function(err) {
+				expect(err).to.exist;
+				expect(err).to.have.property('statusCode').that.equals(400);
+				expect(err).to.have.property('statusMessage').that.equals('Query param not recognised');
+
+				done();
+			});
+
+			search.fetch();
+		});
+
+		it('should return an error if the API request returns an error', function(done) {
+			var search = new Search({
+				test: 'test'
+			}, {
+				mode: 'test'
+			});
+
+			search.on('error', function(err) {
+				expect(err).to.exist;
+
+				done();
+			});
+
+			search.fetch();
+		});
+
+		it('should return an error if no query argument provided', function(done) {
+			var search = new Search();
+
+			search.on('error', function(err) {
+				var expected = {
+					statusCode: 400,
+					statusMessage: 'No query provided',
+					body: {}
+				};
+
+				expect(err).to.exist;
+				expect(err).to.deep.equal(expected);
+
+				done();
+			});
+
+			search.fetch();
 		});
 	});
 
-	describe('#authorSearch()', function() {
-		it('should take an author name as the first argument', function(done) {
-			search.authorSearch('neylon', function(err, result) {
-				expect(result).to.exist;
+	describe('Advanced Search', function() {
+		this.timeout(10000);
+
+		it('should take an object as the search parameter', function(done) {
+			var search = new Search({
+				author: 'neylon'
+			});
+
+			search.on('success', function(data) {
+				expect(data).to.exist;
 
 				done();
 			});
+
+			search.fetch();
 		});
 
 		it('should return an array of article objects', function(done) {
-			search.authorSearch('neylon', function(err, result) {
-				expect(result).to.be.a('array');
+			var search = new Search({
+				author: 'neylon'
+			});
+
+			search.on('success', function(data) {
+				expect(data).to.be.a('array');
 
 				done();
 			});
+
+			search.fetch();
 		});
 
 		it('should return article objects with article metadata written by the author', function(done) {
-			search.authorSearch('neylon', function(err, result) {
-				result.forEach(function(r) {
-					expect(r).to.have.property('id');
-					expect(r).to.have.property('publication_date');
-					expect(r).to.have.property('article_type');
-					expect(r).to.have.property('author_display');
-					expect(r).to.have.property('abstract');
-					expect(r).to.have.property('title_display');
+			var search = new Search({
+				author: 'neylon'
+			});
+
+			search.on('success', function(data) {
+				data.forEach(function(result) {
+					expect(result).to.have.property('id');
+					expect(result).to.have.property('publication_date');
+					expect(result).to.have.property('article_type');
+					expect(result).to.have.property('author_display');
+					expect(result).to.have.property('abstract');
+					expect(result).to.have.property('title_display');
 				});
 
 				done();
 			});
+
+			search.fetch();
+		});
+
+		it('should return article objects with article metadata from searches with multiple query params', function(done) {
+			var search = new Search({
+				abstract: 'open access',
+				journal: 'plos biology'
+			});
+
+			search.on('success', function(data) {
+				data.forEach(function(result) {
+					expect(result).to.have.property('id');
+					expect(result).to.have.property('publication_date');
+					expect(result).to.have.property('article_type');
+					expect(result).to.have.property('author_display');
+					expect(result).to.have.property('abstract');
+					expect(result).to.have.property('title_display');
+				});
+
+				done();
+			});
+
+			search.fetch();
 		});
 	});
 
-	describe('#titleSearch()', function() {
+	describe('Options', function() {
+		this.timeout(10000);
 
-	});
+		it('should take an options object as the second argument', function(done) {
+			var search = new Search('altmetrics', {
+				mode: 'test'
+			});
 
-	describe('#subjectSearch()', function() {
+			search.on('success', function(data) {
+				expect(data).to.exist;
 
-	});
+				done();
+			});
 
-	describe('#abstractSearch()', function() {
-
-	});
-
-	describe('#rawSearch()', function() {
-
+			search.fetch();
+		});
 	});
 });
