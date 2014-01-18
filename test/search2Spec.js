@@ -76,7 +76,7 @@ describe('Search', function() {
 				done();
 			});
 
-			search.on('failure', function(err) {
+			search.on('error', function(err) {
 				expect(err).to.exist;
 
 				done();
@@ -87,6 +87,24 @@ describe('Search', function() {
 
 		it('should return a useful error response if query not provided', function(done) {
 			var search = new Search('');
+
+			search.on('error', function(err) {
+				var expected = {
+					statusCode: 400,
+					statusMessage: 'No query provided',
+					body: {}
+				};
+
+				expect(err).to.deep.equal(expected);
+
+				done();
+			});
+
+			search.fetch();
+		});
+
+		it('should return a 404 error response if query not found', function(done) {
+			var search = new Search('akldfhkdshskfhklsdhskldhfk');
 
 			search.on('failure', function(err) {
 				var expected = {
@@ -134,23 +152,24 @@ describe('Search', function() {
 			search.fetch();
 		});
 
-		// it('should return an error if no query argument provided', function(done) {
-		// 	var search = new Search();
+		it('should return an error if no query argument provided', function(done) {
+			var search = new Search();
 
-		// 	search.on('error', function(err) {
-		// 		var expected = {
-		// 			statusCode: 400,
-		// 			statusMessage: 'No query given'
-		// 		};
+			search.on('error', function(err) {
+				var expected = {
+					statusCode: 400,
+					statusMessage: 'No query provided',
+					body: {}
+				};
 
-		// 		expect(err).to.exist;
-		// 		expect(err).to.deep.equal(expected);
+				expect(err).to.exist;
+				expect(err).to.deep.equal(expected);
 
-		// 		done();
-		// 	});
+				done();
+			});
 
-		// 	search.fetch();
-		// });
+			search.fetch();
+		});
 	});
 
 	describe('Advanced Search', function() {
