@@ -68,67 +68,46 @@ describe('Search', function() {
 		this.timeout(10000);
 
 		it('should return error query not provided', function(done) {
-			var search = new Search('');
-
-			search.on('success', function(data) {
-				expect(data).to.not.exist;
-
-				done();
-			});
-
-			search.on('error', function(err) {
+			try {
+				var search = new Search('');
+			}
+			catch (err) {
 				expect(err).to.exist;
 
 				done();
-			});
-
-			search.fetch();
+			}
 		});
 
 		it('should return a useful error response if query not provided', function(done) {
-			var search = new Search('');
-
-			search.on('error', function(err) {
-				var expected = {
-					statusCode: 400,
-					statusMessage: 'No query provided',
-					body: {}
-				};
-
-				expect(err).to.deep.equal(expected);
+			try {
+				var search = new Search('');
+			}
+			catch (err) {
+				expect(err.message).to.equal('No query provided');
 
 				done();
-			});
-
-			search.fetch();
-		});
-
-		it('should return a 404 error response if query not found', function(done) {
-			var search = new Search('akldfhkdshskfhklsdhskldhfk');
-
-			search.on('failure', function(err) {
-				var expected = {
-					statusCode: 404,
-					statusMessage: 'No results found'
-				};
-
-				expect(err).to.deep.equal(expected);
-
-				done();
-			});
-
-			search.fetch();
+			}
 		});
 
 		it('should only accept query params from the whitelist of possible params', function(done) {
-			var search = new Search({
-				foo: 'bar'
-			});
+			try {
+				var search = new Search({
+					foo: 'bar'
+				});
+			}
+			catch (err) {
+				expect(err).to.exist;
+				expect(err).to.have.property('message').that.equals('Query param: foo not recognised');
+
+				done();
+			}
+		});
+
+		it('should return an error response if query not found', function(done) {
+			var search = new Search('akldfhkdshskfhklsdhskldhfk');
 
 			search.on('error', function(err) {
-				expect(err).to.exist;
-				expect(err).to.have.property('statusCode').that.equals(400);
-				expect(err).to.have.property('statusMessage').that.equals('Query param not recognised');
+				expect(err.message).to.equal('No results found');
 
 				done();
 			});
@@ -153,22 +132,15 @@ describe('Search', function() {
 		});
 
 		it('should return an error if no query argument provided', function(done) {
-			var search = new Search();
-
-			search.on('error', function(err) {
-				var expected = {
-					statusCode: 400,
-					statusMessage: 'No query provided',
-					body: {}
-				};
-
+			try {
+				var search = new Search();
+			}
+			catch (err) {
 				expect(err).to.exist;
-				expect(err).to.deep.equal(expected);
-
+				expect(err.message).to.equal('Query params cannot be parsed');
+				
 				done();
-			});
-
-			search.fetch();
+			}
 		});
 	});
 
