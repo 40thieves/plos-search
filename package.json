@@ -17,6 +17,10 @@
 	"scripts": {
 		"test": "mocha"
 	},
+	"repository": {
+	  "type": "git",
+	  "url": "git://github.com/40thieves/plos-search.git"
+	},
 	"keywords": [
 		"plos",
 		"api",
@@ -24,5 +28,9 @@
 		"altmetrics"
 	],
 	"author": "Ali Smith <alasdairsmith100@gmail.com> (http://alasdairsmith.org.uk)",
-	"license": "MIT"
+	"license": "MIT",
+	"bugs": {
+	  "url": "https://github.com/40thieves/plos-search/issues"
+	},
+	"homepage": "https://github.com/40thieves/plos-search"
 }
