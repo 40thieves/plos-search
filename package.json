@@ -1,0 +1,28 @@
+{
+	"name": "plos-search",
+	"version": "0.0.1",
+	"description": "Wrapper for the Public Library of Science (PLOS) Search API",
+	"main": "app.js",
+	"directories": {
+		"test": "test"
+	},
+	"dependencies": {
+		"request": "~2.31.0",
+		"underscore": "~1.5.2"
+	},
+	"devDependencies": {
+		"mocha": "~1.17.0",
+		"chai": "~1.8.1",
+	},
+	"scripts": {
+		"test": "mocha"
+	},
+	"keywords": [
+		"plos",
+		"api",
+		"search",
+		"altmetrics"
+	],
+	"author": "Ali Smith <alasdairsmith100@gmail.com> (http://alasdairsmith.org.uk)",
+	"license": "MIT"
+}
