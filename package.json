@@ -12,14 +12,14 @@
 	},
 	"devDependencies": {
 		"mocha": "~1.17.0",
-		"chai": "~1.8.1",
+		"chai": "~1.8.1"
 	},
 	"scripts": {
 		"test": "mocha"
 	},
 	"repository": {
-	  "type": "git",
-	  "url": "git://github.com/40thieves/plos-search.git"
+		"type": "git",
+		"url": "git://github.com/40thieves/plos-search.git"
 	},
 	"keywords": [
 		"plos",
@@ -30,7 +30,7 @@
 	"author": "Ali Smith <alasdairsmith100@gmail.com> (http://alasdairsmith.org.uk)",
 	"license": "MIT",
 	"bugs": {
-	  "url": "https://github.com/40thieves/plos-search/issues"
+		"url": "https://github.com/40thieves/plos-search/issues"
 	},
 	"homepage": "https://github.com/40thieves/plos-search"
 }
