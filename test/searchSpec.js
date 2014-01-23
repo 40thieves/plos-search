@@ -1,5 +1,5 @@
 var expect = require('chai').expect
-,	Search = require('../lib/plosSearch2')
+,	Search = require('../lib/plosSearch')
 ;
 
 describe('Search', function() {
