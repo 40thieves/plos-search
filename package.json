@@ -1,36 +1,36 @@
 {
-	"name": "plos-search",
-	"version": "0.0.1",
-	"description": "Wrapper for the Public Library of Science (PLOS) Search API",
-	"main": "app.js",
-	"directories": {
-		"test": "test"
-	},
-	"dependencies": {
-		"request": "~2.31.0",
-		"underscore": "~1.5.2"
-	},
-	"devDependencies": {
-		"mocha": "~1.17.0",
-		"chai": "~1.8.1"
-	},
-	"scripts": {
-		"test": "mocha"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/40thieves/plos-search.git"
-	},
-	"keywords": [
-		"plos",
-		"api",
-		"search",
-		"altmetrics"
-	],
-	"author": "Ali Smith <alasdairsmith100@gmail.com> (http://alasdairsmith.org.uk)",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/40thieves/plos-search/issues"
-	},
-	"homepage": "https://github.com/40thieves/plos-search"
+  "name": "plos-search",
+  "version": "0.0.2",
+  "description": "Wrapper for the Public Library of Science (PLOS) Search API",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "request": "~2.31.0",
+    "underscore": "~1.5.2"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.0",
+    "chai": "~1.8.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/40thieves/plos-search.git"
+  },
+  "keywords": [
+    "plos",
+    "api",
+    "search",
+    "altmetrics"
+  ],
+  "author": "Ali Smith <alasdairsmith100@gmail.com> (http://alasdairsmith.org.uk)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/40thieves/plos-search/issues"
+  },
+  "homepage": "https://github.com/40thieves/plos-search"
 }
