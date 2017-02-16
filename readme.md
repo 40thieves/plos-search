@@ -82,7 +82,7 @@ search.fetch();
 
 ### Running tests
 
-Tests are provided with [`mocha`](http://visionmedia.github.io/mocha/). Run the tests with
+Tests are provided with [`mocha`](http://mochajs.org/). Run the tests with
 
 	npm test
 
